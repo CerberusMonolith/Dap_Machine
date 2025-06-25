@@ -446,7 +446,6 @@
             "🎰 АВТОМАТ: Вы получаете автомат за эту колонку!"
         ];
 
-        // Инициализация элементов
         const slot1 = document.getElementById('slot1');
         const slot2 = document.getElementById('slot2');
         const slot3 = document.getElementById('slot3');
@@ -454,13 +453,11 @@
         const result = document.getElementById('result');
         const taskResult = document.getElementById('taskResult');
 
-        // Заполняем слоты
         function initSlots() {
             slot1.innerHTML = '';
             slot2.innerHTML = '';
             slot3.innerHTML = '';
 
-            // Добавляем дополнительные элементы для бесшовной прокрутки
             const addExtraItems = (arr) => [...arr, ...arr.slice(0, 5)];
 
             addExtraItems(theoreticalQuestions).forEach((question, index) => {
@@ -502,13 +499,12 @@
 
         initSlots();
 
-        // Функция для анимации прокрутки
         function spinSlot(slotElement, itemCount, spins, finalIndex, callback) {
             const items = slotElement.querySelectorAll('.slot-item');
             const itemHeight = items[0].offsetHeight;
             const totalHeight = itemHeight * items.length;
 
-            // Начальная позиция - случайная
+
             let currentPosition = -Math.floor(Math.random() * itemCount) * itemHeight;
             slotElement.style.transform = `translateY(${currentPosition}px)`;
 
@@ -521,29 +517,29 @@
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / (totalSpins * 50), 1); // 50ms на каждый спин
 
-                // Квадратичное замедление
+
                 const slowdown = 1 + 3 * progress * progress;
 
-                // Прокрутка с замедлением
+
                 currentPosition -= itemHeight / slowdown;
 
-                // Если прошли все элементы, начинаем сначала
+
                 if (-currentPosition >= totalHeight) {
                     currentPosition += itemHeight * itemCount;
                 }
 
                 slotElement.style.transform = `translateY(${currentPosition}px)`;
 
-                // Продолжаем анимацию, если не закончили
+
                 if (spinCount < totalSpins) {
                     spinCount++;
                     requestAnimationFrame(animate);
                 } else {
-                    // Устанавливаем финальную позицию
+
                     const finalPosition = -finalIndex * itemHeight;
                     slotElement.style.transform = `translateY(${finalPosition}px)`;
 
-                    // Выделяем выигравший элемент
+
                     highlightWinningItem(slotElement, finalIndex);
 
                     if (callback) callback();
@@ -553,12 +549,11 @@
             requestAnimationFrame(animate);
         }
 
-        // Выделение выигравшего элемента
+
         function highlightWinningItem(slotElement, index) {
             const items = slotElement.querySelectorAll('.slot-item');
             items.forEach(item => item.classList.remove('highlight'));
 
-            // Находим элемент с соответствующим originalIndex
             for (let item of items) {
                 if (parseInt(item.dataset.originalIndex) === index) {
                     item.classList.add('highlight');
@@ -567,23 +562,22 @@
             }
         }
 
-        // Обработчик нажатия на кнопку
+
         spinBtn.addEventListener('click', function () {
-            // Блокируем кнопку на время анимации
+
             spinBtn.disabled = true;
             result.style.display = 'none';
 
-            // Скрываем предыдущие выделения
+
             document.querySelectorAll('.slot-item.highlight').forEach(item => {
                 item.classList.remove('highlight');
             });
 
-            // Случайно выбираем финальные позиции для каждого слота
             const finalIndex1 = Math.floor(Math.random() * theoreticalQuestions.length);
             const finalIndex2 = Math.floor(Math.random() * practicalTasks.length);
             const finalIndex3 = Math.floor(Math.random() * subjectAreas.length);
 
-            // Запускаем анимацию для каждого слота с разной задержкой
+
             setTimeout(() => {
                 spinSlot(slot1, theoreticalQuestions.length, 30, finalIndex1, null);
             }, 0);
@@ -597,18 +591,16 @@
             }, 400);
 
             function showResult() {
-                // Проверяем, есть ли "автомат"
+
                 const isAuto1 = theoreticalQuestions[finalIndex1].includes("🎰");
                 const isAuto2 = practicalTasks[finalIndex2].includes("🎰");
                 const isAuto3 = subjectAreas[finalIndex3].includes("🎰");
 
-                // Разблокируем кнопку
                 spinBtn.disabled = false;
 
-                // Показываем результат
                 result.style.display = 'block';
 
-                // Если есть хотя бы один автомат
+
                 if (isAuto1 || isAuto2 || isAuto3) {
                     result.classList.add('jackpot');
 
@@ -619,7 +611,7 @@
 
                     autoMessage += "<div class='divider'></div>";
 
-                    // Добавляем также все выпавшие элементы
+
                     autoMessage += "<strong>Теоретический вопрос:</strong><br>" +
                         (isAuto1 ? "<span class='automark'>" + theoreticalQuestions[finalIndex1] + "</span>" : theoreticalQuestions[finalIndex1]) + "<br><br>";
 
@@ -642,7 +634,7 @@
             }
         });
 
-        // Инициализация - показываем случайные элементы при загрузке
+
         window.addEventListener('load', function () {
             const randomIndex1 = Math.floor(Math.random() * theoreticalQuestions.length);
             const randomIndex2 = Math.floor(Math.random() * practicalTasks.length);
